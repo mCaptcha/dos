@@ -11,7 +11,7 @@
   {% if error %}
     <p>error</p>
   {% endif %}
-  <form action="/join" method="post">
+  <form action="/protecteprotected" method="post">
     <label for="username">
       Username
       <input type="text" name="username" id="username">
@@ -24,6 +24,23 @@
       Confirm Password
       <input type="password" name="confirm_password" id="confirm_password">
     </label>
+
+
+              "https://demo.mcaptcha.org/widget/?sitekey=pHy0AktWyOKuxZDzFfoaewncWecCHo23"
+      <div
+        id="mcaptcha__widget-container"
+        style="width: 304px; height: 78px"
+      ></div>
+      <script src="{{ url_for('static', filename='index.js') }}"></script>
+      <script charset="utf-8">
+        let config = {
+          widgetLink: new URL(
+            "http://localhost:7000/widget/?sitekey={{ sitekey }}"
+          ),
+        };
+        new mcaptchaGlue.default(config);
+      </script>
+
     <button type="submit">Register</button>
 
   </form>
