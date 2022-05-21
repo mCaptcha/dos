@@ -14,7 +14,6 @@ env: ## Install all dependencies
 	. ./venv/bin/activate && pip install maturin
 	. ./venv/bin/activate && cd ../pow_sha256-py/ && maturin build && pip install .
 	. ./venv/bin/activate && pip install -r requirements.txt
-	. ./venv/bin/activate && cd server && pip install -r requirements.txt
 #	. ./venv/bin/activate && pip install -e .
 	#. ./venv/bin/activate && pip install '.[test]'
 
@@ -26,8 +25,8 @@ help: ## Prints help for targets with comments
 	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 lint: ## Run linter
-	@./venv/bin/black mcaptcha.py
-	@./venv/bin/black unprotected.py
+	@./venv/bin/black protected/
+	@./venv/bin/black unprotected/
 	@./venv/bin/black server/src/
 
 #test: ## Run tests

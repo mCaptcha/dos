@@ -31,7 +31,6 @@ mypy-extensions==0.4.3
 parso==0.8.2
 pathspec==0.9.0
 platformdirs==2.4.0
-pow_sha256-py @ file:///src/atm/code/mcaptcha/pow_sha256-py
 psutil==5.9.1
 pycparser==2.20
 pylint==2.11.1

@@ -58,7 +58,8 @@ app.logger.setLevel(logging.DEBUG)
 bcrypt = Bcrypt(app)
 init_db()
 
-mcaptcha_sitekey = os.getenv("MCAPTCHA_SITEKEY")
+# mcaptcha_sitekey = os.getenv("MCAPTCHA_SITEKEY")
+mcaptcha_sitekey = "oupjLmu2Fs34JwlNKB1LsRAI1lfLx4So"
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -79,6 +80,7 @@ def unprotected():
             return render_template("index.html")
 
         register(username, password)
+        return render_template("index.html")
     else:
         return render_template("unprotected.html", error=error)
 
@@ -89,7 +91,6 @@ def protected():
     if request.method == "POST":
         username = str.strip(request.form["username"])
         password = str.strip(request.form["password"])
-        password = str.strip(request.form["nonce"])
         confirm_password = str.strip(request.form["confirm_password"])
 
         if confirm_password != password:
@@ -111,6 +112,7 @@ def protected():
             return "invalid captcha", 400
         else:
             register(username, password)
+            return render_template("index.html")
     else:
         return render_template("protected.html", sitekey=mcaptcha_sitekey)
 
