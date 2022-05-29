@@ -4,7 +4,7 @@ services:
   mcaptcha:
     image: mcaptcha/mcaptcha-dos-server:latest
     ports:
-      - 5000:7000
+      - 5000:5000
     environment:
       DATABASE_URL: postgres://postgres:password@postgres:5432/postgres # set password at placeholder
       MCAPTCHA_REDIS_URL: redis://mcaptcha-redis/
@@ -13,7 +13,7 @@ services:
   postgres:
     image: postgres:13.2
     volumes:
-      - mcaptcha-data:/var/lib/postgresql/
+      - mcaptcha-dos-data:/var/lib/postgresql/
     environment:
       POSTGRES_PASSWORD: password # change password
       PGDATA: /var/lib/postgresql/data/mcaptcha/
