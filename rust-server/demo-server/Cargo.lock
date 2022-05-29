@@ -612,27 +612,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "demo-server"
-version = "0.1.0"
-dependencies = [
- "actix",
- "actix-http",
- "actix-web",
- "actix-web-codegen-const-routes",
- "argon2-creds",
- "config",
- "log",
- "pretty_env_logger",
- "reqwest",
- "serde 1.0.137",
- "serde_json",
- "sqlx",
- "url",
- "urlencoding",
- "validator",
-]
-
-[[package]]
 name = "derive_builder"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1256,6 +1235,27 @@ name = "matches"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a3e378b66a060d48947b590737b30a1be76706c8dd7b8ba0f2fe3989c68a853f"
+
+[[package]]
+name = "mcaptcha-dos-server"
+version = "0.1.0"
+dependencies = [
+ "actix",
+ "actix-http",
+ "actix-web",
+ "actix-web-codegen-const-routes",
+ "argon2-creds",
+ "config",
+ "log",
+ "pretty_env_logger",
+ "reqwest",
+ "serde 1.0.137",
+ "serde_json",
+ "sqlx",
+ "url",
+ "urlencoding",
+ "validator",
+]
 
 [[package]]
 name = "md-5"
