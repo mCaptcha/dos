@@ -19,7 +19,8 @@ env: ## Install all dependencies
 
 freeze: ## Freeze python dependencies
 	@. ./venv/bin/activate && pip freeze > requirements.txt
-	@-sed -i '/pow_py.*/d' requirements.txt
+	@-sed -i '/mcaptcha-pow-py.*/d' requirements.txt
+	@-sed -i '/maturin.*/d' requirements.txt
 
 help: ## Prints help for targets with comments
 	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
