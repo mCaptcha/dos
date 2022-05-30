@@ -40,4 +40,4 @@ COPY requirements.txt .
 RUN venv/bin/pip install -r requirements.txt
 COPY . .
 WORKDIR unprotected/
-CMD [ "../venv/bin/locust" ]
+ENTRYPOINT [ "../venv/bin/locust" ]
