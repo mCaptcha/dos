@@ -1,0 +1,43 @@
+FROM python:3.10-slim-buster as builder
+RUN set -ex; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends git curl wget build-essential
+RUN useradd -ms /bin/bash -u 1001 builder
+USER builder
+RUN pip3 install virtualenv && mkdir /home/builder/src
+WORKDIR /home/builder/src
+RUN /home/builder/.local/bin/virtualenv venv
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh \
+	&& chmod +x ./rustup.sh \
+	&& ./rustup.sh -y
+RUN venv/bin/pip install maturin
+RUN git clone https://github.com/mCaptcha/pow_py
+RUN cd pow_py && PATH=$PATH:/home/builder/.cargo/bin/ ../venv/bin/maturin build
+
+FROM python:3.10-slim-buster
+LABEL org.opencontainers.image.source https://github.com/mcaptcha/dos/unprotected
+RUN set -ex; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends git curl wget build-essential \
+	python3-dev libffi-dev
+RUN useradd -ms /bin/bash -u 1001 mcaptcha-locust
+USER mcaptcha-locust
+WORKDIR /home/mcaptcha-locust
+#RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh \
+#	&& chmod +x ./rustup.sh \
+#	&& ./rustup.sh -y
+RUN mkdir /home/mcaptcha-locust/app
+WORKDIR /home/mcaptcha-locust/app
+RUN pip3 install virtualenv
+RUN /home/mcaptcha-locust/.local/bin/virtualenv venv
+WORKDIR /src/
+COPY --from=builder /home/builder/src/pow_py/target/wheels /src/
+RUN PATH=$PATH:/home/mcaptcha-locust/.cargo/bin/ /home/mcaptcha-locust/app/venv/bin/pip install $(find /src/ | grep whl)
+WORKDIR /home/mcaptcha-locust/app
+COPY requirements.txt .
+RUN venv/bin/pip install -r requirements.txt
+COPY . .
+WORKDIR protected/
+ENTRYPOINT [ "../venv/bin/locust" ]
