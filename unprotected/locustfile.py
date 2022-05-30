@@ -6,5 +6,7 @@ class Unprotected(HttpUser):
 
     @task
     def unprotected(self):
-        data = {"username": "foo", "password": "foo", "confirm_password": "foo"}
+        password = "fooobarasdfasdf"
+        username = "realaravinth"
+        data = {"username": username, "password": username, "confirm_password": username}
         self.client.post("/unprotected", data=data)
