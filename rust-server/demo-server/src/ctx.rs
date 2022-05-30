@@ -15,11 +15,13 @@
  */
 //! App data: redis cache, database connections, etc.
 use std::sync::Arc;
+use std::str::FromStr;
 use std::thread;
 
 use argon2_creds::{Config, ConfigBuilder, PasswordPolicy};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
+use sqlx::ConnectOptions;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -63,9 +65,13 @@ impl Ctx {
             log::info!("Initialized credential manager");
         });
 
+        let mut connect_options = sqlx::postgres::PgConnectOptions::from_str(&s.database.url).unwrap();
+        if !s.debug{
+            connect_options.disable_statement_logging();
+        }
         let db = PgPoolOptions::new()
             .max_connections(s.database.pool)
-            .connect(&s.database.url)
+            .connect_with(connect_options)
             .await
             .expect("Unable to form database pool");
 

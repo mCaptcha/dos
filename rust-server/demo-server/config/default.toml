@@ -1,4 +1,4 @@
-debug = true
+debug = false
 source_code = "https://github.com/mCaptcha/dos"
 
 [server]

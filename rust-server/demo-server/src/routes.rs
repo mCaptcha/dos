@@ -134,7 +134,7 @@ pub struct RegisterProtected {
     pub username: String,
     pub password: String,
     pub confirm_password: String,
-    pub mcaptcha_token: String,
+    pub mcaptcha__token: String,
 }
 
 impl From<RegisterProtected> for runners::Register {
@@ -155,14 +155,14 @@ async fn protected(
     ctx: AppCtx,
 ) -> impl Responder {
     let payload = payload.into_inner();
-    if !ctx.verify_token(&payload.mcaptcha_token).await {
+    if !ctx.verify_token(&payload.mcaptcha__token).await {
         println!("Invalid Captcha");
         HttpResponse::BadRequest().body("Invalid Captcha")
     } else {
         if let Err(e) = runners::register_runner(&payload.into(), &ctx).await {
             HttpResponse::BadRequest().body(e)
         } else {
-            HttpResponse::Ok().into()
+            HttpResponse::Ok().body("OK").into()
         }
     }
 }
@@ -176,6 +176,6 @@ async fn unprotected(
     if let Err(e) = runners::register_runner(&payload, &ctx).await {
         HttpResponse::BadRequest().body(e)
     } else {
-        HttpResponse::Ok().into()
+        HttpResponse::Ok().body("OK").into()
     }
 }
