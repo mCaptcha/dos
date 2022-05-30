@@ -1,16 +1,16 @@
-from locust import HttpUser, between, task
+import os
 
-
-# import pow_sha256_py
-# from pow_sha256_py import pow_py# import PowConfig, Work
-# from pow_py import PowConfig, Work
-import pow_py
+from locust import FastHttpUser, between, task
+import mcaptcha_pow_py
 import requests
 
-# pow_sha256_py.pow_py.Config
-class Unprotected(HttpUser):
-    #    wait_time = between(5, 15)
-    sitekey = "oupjLmu2Fs34JwlNKB1LsRAI1lfLx4So"
+
+password = "fooobarasdfasdf"
+username = "realaravinth"
+
+class Unprotected(FastHttpUser):
+    wait_time = between(5, 15)
+    sitekey = os.getenv("MCAPTCHA_CAPTCHA_SITEKEY")
 
     @task
     def protected(self):
@@ -20,14 +20,11 @@ class Unprotected(HttpUser):
         )
         challenge_config = challenge_config.json()
 
-        #        print("working")
-        config = pow_py.PoWConfig(challenge_config["salt"])
-        work = config.work(
-            challenge_config["string"], challenge_config["difficulty_factor"]
-        )
-        #        print(f"current difficulty factor: {challenge_config['difficulty_factor']}")
-        #        print("proof generated")
+        config = mcaptcha_pow_py.PoWConfig(challenge_config["salt"])
+        pow_string  = challenge_config["string"]
+        pow_difficulty_factor = challenge_config["difficulty_factor"]
 
+        work = config.work(pow_string, pow_difficulty_factor)
         proof = {
             "key": self.sitekey,
             "nonce": work.nonce,
@@ -35,17 +32,14 @@ class Unprotected(HttpUser):
             "string": challenge_config["string"],
         }
         resp = requests.post("http://localhost:7000/api/v1/pow/verify", json=proof)
-        #        print(resp.text)
-        #        print(resp.text)
         resp = resp.json()
-        #        print(resp)
         token = resp["token"]
 
-        #        print("token sent")
         data = {
-            "username": "foo",
-            "password": "foo",
-            "confirm_password": "foo",
-            "mcaptcha__token": token,
+                "username": username,
+                "password": username,
+                "confirm_password": username,
+                "mcaptcha__token": token,
         }
-        self.client.post("/protected", data=data)
+        response = self.client.post("/protected", data=data)
+        print(pow_difficulty_factor)
