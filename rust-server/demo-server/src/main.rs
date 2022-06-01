@@ -18,14 +18,14 @@ use std::env;
 use std::sync::Arc;
 
 use actix_web::{
-    error::InternalError, http::StatusCode, middleware as actix_middleware,
-    web::JsonConfig, App, HttpServer,
+    error::InternalError, http::StatusCode, middleware as actix_middleware, web::JsonConfig, App,
+    HttpServer,
 };
 use log::info;
 
-mod settings;
 mod ctx;
 mod routes;
+mod settings;
 
 pub use crate::ctx::Ctx;
 pub use settings::Settings;
@@ -56,6 +56,7 @@ async fn main() -> std::io::Result<()> {
     let settings = Settings::new().unwrap();
     let ctx = ctx::Ctx::new(&settings).await;
     let ctx = AppCtx::new(ctx);
+    sqlx::migrate!("./migrations/").run(&ctx.db).await.unwrap();
 
     let ip = settings.server.get_ip();
     println!("Starting server on: http://{ip}");
