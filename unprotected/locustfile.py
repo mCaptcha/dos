@@ -1,12 +1,17 @@
-from locust import HttpUser, between, task
+from locust import FastHttpUser, between, task
+
+password = "fooobarasdfasdf"
+username = "realaravinth"
 
 
-class Unprotected(HttpUser):
+class Unprotected(FastHttpUser):
     #    wait_time = between(5, 15)
 
     @task
     def unprotected(self):
-        password = "fooobarasdfasdf"
-        username = "realaravinth"
-        data = {"username": username, "password": username, "confirm_password": username}
+        data = {
+            "username": username,
+            "password": username,
+            "confirm_password": username,
+        }
         self.client.post("/unprotected", data=data)
