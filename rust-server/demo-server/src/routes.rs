@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::AppCtx;
 
-pub const ROUTES: routes::Routes= routes::Routes::new();
+pub const ROUTES: routes::Routes = routes::Routes::new();
 const INDEX: &str = include_str!("./static/index.html");
 const INDEX_JS: &str = include_str!("./static/index.js");
 const PROTECTED: &str = include_str!("./static/protected.html");
@@ -42,7 +42,10 @@ pub mod routes {
             let protected = "/protected";
             let unprotected = "/unprotected";
             Routes {
-                index, protected, unprotected, index_js
+                index,
+                protected,
+                unprotected,
+                index_js,
             }
         }
     }
@@ -72,23 +75,20 @@ pub mod runners {
         pub password: String,
     }
 
-
-    pub async fn register_runner(
-        payload: &Register,
-        ctx: &AppCtx,
-    ) -> Result<(), &'static str> {
+    pub async fn register_runner(payload: &Register, ctx: &AppCtx) -> Result<(), &'static str> {
         if payload.password != payload.confirm_password {
-            return Err("Passowrds don't match")
+            return Err("Passowrds don't match");
         }
         let username = ctx.creds.username(&payload.username).unwrap();
         let hash = ctx.creds.password(&payload.password).unwrap();
 
-        sqlx::query!("INSERT INTO users (name , password) values ($1, $2)",
-                &username,
-                &hash,
-            )
-            .execute(&ctx.db)
-            .await
+        sqlx::query!(
+            "INSERT INTO users (name , password) values ($1, $2)",
+            &username,
+            &hash,
+        )
+        .execute(&ctx.db)
+        .await
         .unwrap();
         Ok(())
     }
@@ -105,14 +105,15 @@ pub fn services(cfg: &mut web::ServiceConfig) {
 
 #[actix_web_codegen_const_routes::get(path = "ROUTES.index_js")]
 async fn index_js() -> impl Responder {
-    HttpResponse::Ok().content_type("application/javascript").body(INDEX_JS)
+    HttpResponse::Ok()
+        .content_type("application/javascript")
+        .body(INDEX_JS)
 }
 
 #[actix_web_codegen_const_routes::get(path = "ROUTES.protected")]
 async fn protected_page(ctx: AppCtx) -> impl Responder {
     let html = actix_web::http::header::ContentType::html();
-    let page = PROTECTED.replace(
-            "MCAPTCHA_URL_REPLACEME", &ctx.captcha_path);
+    let page = PROTECTED.replace("MCAPTCHA_URL_REPLACEME", &ctx.captcha_path);
 
     HttpResponse::Ok().content_type(html).body(page)
 }
@@ -140,20 +141,15 @@ pub struct RegisterProtected {
 impl From<RegisterProtected> for runners::Register {
     fn from(r: RegisterProtected) -> Self {
         Self {
-    username: r.username,
-    password: r.password,
-    confirm_password: r.confirm_password,
-}
-
+            username: r.username,
+            password: r.password,
+            confirm_password: r.confirm_password,
+        }
     }
 }
 
-
 #[actix_web_codegen_const_routes::post(path = "ROUTES.protected")]
-async fn protected(
-    payload: web::Form<RegisterProtected>,
-    ctx: AppCtx,
-) -> impl Responder {
+async fn protected(payload: web::Form<RegisterProtected>, ctx: AppCtx) -> impl Responder {
     let payload = payload.into_inner();
     if !ctx.verify_token(&payload.mcaptcha__token).await {
         println!("Invalid Captcha");
@@ -168,10 +164,7 @@ async fn protected(
 }
 
 #[actix_web_codegen_const_routes::post(path = "ROUTES.unprotected")]
-async fn unprotected(
-    payload: web::Form<runners::Register>,
-    ctx: AppCtx,
-) -> impl Responder {
+async fn unprotected(payload: web::Form<runners::Register>, ctx: AppCtx) -> impl Responder {
     runners::register_runner(&payload, &ctx).await.unwrap();
     if let Err(e) = runners::register_runner(&payload, &ctx).await {
         HttpResponse::BadRequest().body(e)

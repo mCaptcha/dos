@@ -14,16 +14,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 //! App data: redis cache, database connections, etc.
-use std::sync::Arc;
 use std::str::FromStr;
+use std::sync::Arc;
 use std::thread;
 
 use argon2_creds::{Config, ConfigBuilder, PasswordPolicy};
-use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
-use sqlx::ConnectOptions;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use sqlx::postgres::PgPoolOptions;
+use sqlx::ConnectOptions;
+use sqlx::PgPool;
 
 use crate::settings::Settings;
 
@@ -65,8 +65,9 @@ impl Ctx {
             log::info!("Initialized credential manager");
         });
 
-        let mut connect_options = sqlx::postgres::PgConnectOptions::from_str(&s.database.url).unwrap();
-        if !s.debug{
+        let mut connect_options =
+            sqlx::postgres::PgConnectOptions::from_str(&s.database.url).unwrap();
+        if !s.debug {
             connect_options.disable_statement_logging();
         }
         let db = PgPoolOptions::new()
@@ -76,16 +77,14 @@ impl Ctx {
             .expect("Unable to form database pool");
 
         let mut verify_path = s.captcha.mcaptcha_url.clone();
-            verify_path.set_path("/api/v1/pow/siteverify");
+        verify_path.set_path("/api/v1/pow/siteverify");
         let verify_path = verify_path.into();
-
 
         let mut captcha_path = s.captcha.mcaptcha_url.clone();
         captcha_path.set_path("/widget");
-        captcha_path.set_query( Some(&format!("sitekey={}", s.captcha.sitekey)));
+        captcha_path.set_query(Some(&format!("sitekey={}", s.captcha.sitekey)));
 
-
-        let captcha_path= captcha_path.into();
+        let captcha_path = captcha_path.into();
         let data = Ctx {
             creds,
             db,
@@ -101,17 +100,24 @@ impl Ctx {
 
     pub async fn verify_token(&self, token: &str) -> bool {
         let payload = CaptchaVerfiyPayload::from_ctx(&self, &token);
-        let res: CaptchaVerifyResp = self.http.post(&self.verify_path).json(&payload).send().await.unwrap().json().await.unwrap();
+        let res: CaptchaVerifyResp = self
+            .http
+            .post(&self.verify_path)
+            .json(&payload)
+            .send()
+            .await
+            .unwrap()
+            .json()
+            .await
+            .unwrap();
         res.valid
     }
 }
-
 
 #[derive(Default, Debug, PartialEq, Clone, Serialize, Deserialize)]
 struct CaptchaVerifyResp {
     valid: bool,
 }
-
 
 #[derive(Default, Debug, PartialEq, Clone, Serialize, Deserialize)]
 struct CaptchaVerfiyPayload<'a> {
