@@ -39,5 +39,5 @@ WORKDIR /home/mcaptcha-locust/app
 COPY requirements.txt .
 RUN venv/bin/pip install -r requirements.txt
 COPY . .
-WORKDIR protected/
-ENTRYPOINT [ "../venv/bin/locust" ]
+RUN . venv/bin/activate && pip freeze
+ENTRYPOINT [ "./scripts/protected-entry.sh"]
