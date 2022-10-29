@@ -33,7 +33,7 @@ password hashing and storing in DB**
     [locust](https://locust.io) that launches an attack on the unprotected
     endpoint
 
--   [protected](./unprotected): DoS Client written using
-    [locust](https://locust.io) that launches an attack on the rotected
+-   [protected](./protected): DoS Client written using
+    [locust](https://locust.io) that launches an attack on the protected
     endpoint. It generates proof of work and solves the captcha on every
     request.

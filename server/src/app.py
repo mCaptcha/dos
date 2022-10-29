@@ -109,7 +109,9 @@ def protected():
             "http://localhost:7000/api/v1/pow/siteverify", json=payload
         )
         resp = resp.json()
-        if resp["valid"] == False:
+        if resp["error"]:
+            return resp["error"], 500
+        elif resp["valid"] == False:
             return "invalid captcha", 400
         else:
             register(username, password)
