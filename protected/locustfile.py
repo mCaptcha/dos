@@ -9,7 +9,7 @@ password = "fooobarasdfasdf"
 username = "realaravinth"
 
 
-class Unprotected(FastHttpUser):
+class Protected(FastHttpUser):
     wait_time = between(5, 15)
     sitekey = os.getenv("MCAPTCHA_CAPTCHA_SITEKEY")
     host = os.getenv("MCAPTCHA_CAPTCHA_HOST")

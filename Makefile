@@ -35,4 +35,4 @@ lint: ## Run linter
 #	$(call	test_pow_sha_256_py)
 
 serve:
-	@source ./venv/bin/activate && FLASK_APP=server/src/app FLASK_ENV=development flask run
+	. ./venv/bin/activate && FLASK_APP=server/src/app FLASK_ENV=development flask run

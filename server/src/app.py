@@ -58,8 +58,8 @@ app.logger.setLevel(logging.DEBUG)
 bcrypt = Bcrypt(app)
 init_db()
 
-# mcaptcha_sitekey = os.getenv("MCAPTCHA_SITEKEY")
-mcaptcha_sitekey = "oupjLmu2Fs34JwlNKB1LsRAI1lfLx4So"
+mcaptcha_secret = os.getenv("MCAPTCHA_SECRET")
+mcaptcha_sitekey = os.getenv("MCAPTCHA_SITEKEY")
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -103,12 +103,15 @@ def protected():
         payload = {
             "token": mcaptcha_token,
             "key": mcaptcha_sitekey,
+            "secret": mcaptcha_secret,
         }
         resp = requests.post(
             "http://localhost:7000/api/v1/pow/siteverify", json=payload
         )
         resp = resp.json()
-        if resp["valid"] == False:
+        if resp["error"]:
+            return resp["error"], 500
+        elif resp["valid"] == False:
             return "invalid captcha", 400
         else:
             register(username, password)
