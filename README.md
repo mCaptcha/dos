@@ -37,3 +37,21 @@ password hashing and storing in DB**
     [locust](https://locust.io) that launches an attack on the rotected
     endpoint. It generates proof of work and solves the captcha on every
     request.
+
+## Funding
+
+### NLnet
+
+<div align="center">
+	<img
+		height="150px"
+		alt="NLnet NGIZero logo"
+		src="./docs/third-party/NGIZero-green.hex.svg"
+	/>
+</div>
+
+<br />
+
+2023 development is funded through the [NGI0 Entrust
+Fund](https://nlnet.nl/entrust), via [NLnet](https://nlnet.nl/). Please
+see [here](https://nlnet.nl/project/mCaptcha/) for more details.
