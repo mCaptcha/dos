@@ -8,6 +8,7 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:password@postgres:5432/postgres # set password at placeholder
       MCAPTCHA_REDIS_URL: redis://mcaptcha-redis/
+      MCAPTCHA_CAPTCHA_SITEKEY: "29UeO6rJCB5knsCKdYbF02hpA6AcwFqq"
       RUST_LOG: debug
 
   postgres:

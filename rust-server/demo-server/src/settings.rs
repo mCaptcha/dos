@@ -32,6 +32,7 @@ pub struct Server {
 #[derive(Debug, Clone, Deserialize)]
 pub struct Captcha {
     pub sitekey: String,
+    pub secret: String,
     pub mcaptcha_url: Url,
 }
 

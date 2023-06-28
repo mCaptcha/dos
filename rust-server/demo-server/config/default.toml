@@ -19,8 +19,9 @@ proxy_has_tls = false
 
 [captcha]
 # Please set sitekey retrieved from an mCaptcha instance
-sitekey = "5PgY7Ut1uvym9pibKLfFurgn35sd3pnz"
-mcaptcha_url = "http://localhost:7000"
+sitekey = "i6ryToO34xDwQqQ4vsR0KbdzUKhg7uZV"
+secret = "ey34Pq2n2w43IS9G9AnF0DQ5f8JkcNds"
+mcaptcha_url = "http://192.168.0.104:7000"
 
 [database]
 # This section deals with the database location and how to access it
@@ -31,7 +32,7 @@ mcaptcha_url = "http://localhost:7000"
 # username = "batman"
 # password = "somereallycomplicatedBatmanpassword"
 hostname = "localhost"
-port = "5431"
+port = "5430"
 username = "postgres"
 password = "password"
 name = "postgres"

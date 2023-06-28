@@ -123,11 +123,13 @@ struct CaptchaVerifyResp {
 struct CaptchaVerfiyPayload<'a> {
     token: &'a str,
     key: &'a str,
+    secret: &'a str,
 }
 
 impl<'a> CaptchaVerfiyPayload<'a> {
     fn from_ctx(ctx: &'a Ctx, token: &'a str) -> Self {
         Self {
+            secret: &ctx.settings.captcha.secret,
             key: &ctx.settings.captcha.sitekey,
             token,
         }
